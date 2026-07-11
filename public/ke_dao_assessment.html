@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课导职业能力评估</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74',
+                            400: '#fb923c', 500: '#f97316', 600: '#ea580c', 700: '#c2410c',
+                            800: '#9a3412', 900: '#7c2d12',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; }
+        .chat-bubble-left { position: relative; max-width: 80%; }
+        .chat-bubble-left::before {
+            content: ''; position: absolute; left: -8px; top: 12px;
+            width: 0; height: 0; border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent; border-right: 8px solid #f3f4f6;
+        }
+        .chat-bubble-right { position: relative; max-width: 80%; }
+        .chat-bubble-right::after {
+            content: ''; position: absolute; right: -8px; top: 12px;
+            width: 0; height: 0; border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent; border-left: 8px solid #3b82f6;
+        }
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-in { animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .option-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2); }
+        .option-card.selected { border-color: #f97316; background-color: #fff7ed; }
+        .progress-bar { transition: width 0.5s ease; }
+        .scroll-smooth { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #fdba74; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+        .chat-bg { background-image: linear-gradient(180deg, #f0f2f5 0%, #e4e6e9 100%); }
+    </style>
+</head>
+<body class="bg-primary-50 min-h-screen">
+
+<!-- ========== 主页 ========== -->
+<div id="homePage" class="min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden fade-in">
+        <div class="bg-primary-500 p-8 text-center">
+            <div class="inline-block bg-white/20 rounded-full p-4 mb-4">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">课导职业能力评估</h1>
+            <p class="text-primary-100 text-sm">由 AI 智能引导 · 发现你的职场潜能</p>
+        </div>
+        <div class="p-8">
+            <div class="bg-primary-50 rounded-2xl p-6 mb-8 border border-primary-200">
+                <h3 class="text-primary-800 font-semibold mb-3 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>
+                    测试简介
+                </h3>
+                <p class="text-gray-700 text-sm leading-relaxed mb-3">各位学员，大家好，今天我们要进行一个十分有趣的测试。</p>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <div class="flex items-start">
+                        <span class="bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5 shrink-0">1</span>
+                        <p>我们不测玄学，不贴标签，只用 <strong class="text-primary-700">30个超真实的职场小场景</strong>，帮你测出你的情商、抗压、应变、细心、耐心、责任心、共情、服务意识 <strong class="text-primary-700">8大隐藏属性</strong>！</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="bg-primary-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5 shrink-0">2</span>
+                        <p>决定职场天花板高度的往往是我们的"软技能"。希望大家不必刻意美化答案。我们更希望看到你最真实的第一反应，而非"教科书式"的完美回答。因为真实的反馈才能带来真正的成长。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4 mb-8">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">学员姓名</label>
+                    <input type="text" id="userName" placeholder="请输入你的姓名" 
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">所在城市</label>
+                    <input type="text" id="userCity" placeholder="请输入你所在的城市" 
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition">
+                </div>
+            </div>
+            <button onclick="startTest()" 
+                class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary-500/30 transition transform hover:scale-[1.02] active:scale-[0.98]">
+                开始测试
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 第一部分：选择题 ========== -->
+<div id="quizPage" class="hidden min-h-screen p-4">
+    <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-lg p-4 mb-6 sticky top-4 z-50">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-gray-600">第一部分：选择题</span>
+                <span class="text-sm font-bold text-primary-600" id="quizProgress">1 / 30</span>
+            </div>
+            <div class="w-full bg-gray-100 rounded-full h-2.5">
+                <div id="quizProgressBar" class="bg-primary-500 h-2.5 rounded-full progress-bar" style="width: 3%"></div>
+            </div>
+        </div>
+        <div id="quizContainer" class="space-y-6"></div>
+        <div class="flex justify-between mt-8 mb-12">
+            <button id="quizPrevBtn" onclick="prevQuiz()" class="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-medium hover:bg-gray-200 transition disabled:opacity-50">
+                上一题
+            </button>
+            <button id="quizNextBtn" onclick="nextQuiz()" class="px-8 py-3 bg-primary-500 text-white rounded-xl font-bold hover:bg-primary-600 transition shadow-lg shadow-primary-500/30">
+                下一题
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 第二部分：场景模拟 ========== -->
+<div id="chatPage" class="hidden min-h-screen bg-gray-100">
+    <div class="max-w-2xl mx-auto h-screen flex flex-col">
+        <!-- 聊天头部 -->
+        <div class="bg-primary-500 text-white p-4 flex items-center justify-between shadow-lg shrink-0">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-bold" id="chatTitle">场景模拟</h3>
+                    <p class="text-xs text-primary-100" id="chatSubtitle">AI 智能面试官</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="prevScene()" id="scenePrevBtn" class="px-3 py-1.5 bg-white/20 rounded-lg text-sm hover:bg-white/30 transition disabled:opacity-50">
+                    上一题
+                </button>
+                <button onclick="nextScene()" id="sceneNextBtn" class="px-3 py-1.5 bg-white/20 rounded-lg text-sm hover:bg-white/30 transition disabled:opacity-50">
+                    下一题
+                </button>
+            </div>
+        </div>
+
+        <!-- 场景背景信息卡片 -->
+        <div id="sceneBackground" class="bg-white border-b border-gray-200 p-4 shrink-0">
+            <div class="bg-primary-50 rounded-xl p-4 border border-primary-100">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="bg-primary-500 text-white text-xs px-2 py-0.5 rounded font-bold">场景背景</span>
+                    <span class="text-primary-700 text-xs font-medium" id="sceneTypeBadge">情商维度</span>
+                </div>
+                <p class="text-gray-700 text-sm leading-relaxed mb-2" id="sceneDesc">场景描述加载中...</p>
+                <div class="flex items-start gap-2 text-xs text-gray-500">
+                    <svg class="w-4 h-4 text-primary-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="sceneTarget">练习目标加载中...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天消息区 -->
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth chat-bg"></div>
+
+        <!-- 输入区 -->
+        <div class="bg-white border-t border-gray-200 p-4 shrink-0">
+            <div class="flex gap-2">
+                <textarea id="chatInput" rows="2" placeholder="请输入你的回复..." 
+                    class="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none transition"
+                    onkeydown="if(event.key==='Enter' && !event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+                <button onclick="sendMessage()" id="sendBtn"
+                    class="px-6 bg-primary-500 text-white rounded-xl font-bold hover:bg-primary-600 transition flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2 text-center">沟通4轮或提供解决方案后可进入下一题，也可点击上方按钮切换</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== 结果页 ========== -->
+<div id="resultPage" class="hidden min-h-screen p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden fade-in">
+            <div class="bg-primary-500 p-8 text-center">
+                <h2 class="text-3xl font-bold text-white mb-2">评估结果</h2>
+                <p class="text-primary-100">恭喜你完成了全部测试！</p>
+            </div>
+            <div class="p-8">
+                <div class="text-center mb-8">
+                    <div class="inline-block">
+                        <div class="text-6xl font-bold text-primary-600" id="totalScore">0</div>
+                        <div class="text-gray-500 text-sm mt-1">总分 / 100</div>
+                    </div>
+                    <div class="flex justify-center gap-8 mt-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800" id="part1Score">0</div>
+                            <div class="text-xs text-gray-500">选择题 (30%)</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-gray-800" id="part2Score">0</div>
+                            <div class="text-xs text-gray-500">场景模拟 (70%)</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center mb-8">
+                    <div class="w-full max-w-md">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 hidden">
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreEQ">0</div>
+                        <div class="text-xs text-gray-600">情商</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreStress">0</div>
+                        <div class="text-xs text-gray-600">抗压</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreAdapt">0</div>
+                        <div class="text-xs text-gray-600">应变</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreDetail">0</div>
+                        <div class="text-xs text-gray-600">细心</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scorePatience">0</div>
+                        <div class="text-xs text-gray-600">耐心</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreResp">0</div>
+                        <div class="text-xs text-gray-600">责任心</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreEmpathy">0</div>
+                        <div class="text-xs text-gray-600">共情</div>
+                    </div>
+                    <div class="bg-primary-50 rounded-xl p-4 text-center border border-primary-100">
+                        <div class="text-lg font-bold text-primary-700" id="scoreService">0</div>
+                        <div class="text-xs text-gray-600">服务意识</div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 text-primary-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        AI 智能评语
+                    </h3>
+                    <div id="commentSection" class="space-y-4"></div>
+                </div>
+                <div class="mt-8 text-center">
+                    <button onclick="location.reload()" 
+                        class="px-8 py-3 bg-primary-500 text-white rounded-xl font-bold hover:bg-primary-600 transition shadow-lg shadow-primary-500/30">
+                        重新测试
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ==================== 数据定义 ====================
+const rawQuestions = [
+    { id: 1, dim: 'eq', text: '当你在工作中感到压力很大时，你通常会：', 
+      options: [
+        { key: 'A', text: '先冷静分析压力来源，然后制定应对计划', score: 4 },
+        { key: 'B', text: '立即找人倾诉，释放情绪', score: 3 },
+        { key: 'C', text: '独自消化，尽量不影响他人', score: 2 },
+        { key: 'D', text: '暂时放下工作，做一些放松活动', score: 1 }
+      ]},
+    { id: 2, dim: 'eq', text: '当你意识到自己犯了错误时，你会：',
+      options: [
+        { key: 'A', text: '立刻承认并道歉，寻求补救方案', score: 4 },
+        { key: 'B', text: '先评估影响范围，再决定如何处理', score: 3 },
+        { key: 'C', text: '感到自责，需要时间调整心态', score: 2 },
+        { key: 'D', text: '想办法掩盖或淡化错误', score: 1 }
+      ]},
+    { id: 3, dim: 'eq', text: '在团队合作中，你更倾向于：',
+      options: [
+        { key: 'A', text: '主动协调各方意见，促进共识', score: 4 },
+        { key: 'B', text: '专注完成自己的任务，配合团队', score: 3 },
+        { key: 'C', text: '提出创新想法，推动改进', score: 2 },
+        { key: 'D', text: '观察团队动态，适时提供支持', score: 1 }
+      ]},
+    { id: 4, dim: 'eq', text: '当你的观点与他人发生分歧时，你会：',
+      options: [
+        { key: 'A', text: '耐心倾听对方观点，寻找共同点', score: 4 },
+        { key: 'B', text: '坚持自己的看法，用事实说服对方', score: 3 },
+        { key: 'C', text: '避免冲突，暂时搁置争议', score: 2 },
+        { key: 'D', text: '感到不快，希望尽快结束讨论', score: 1 }
+      ]},
+    { id: 5, dim: 'stress', text: '面对紧急且重要的任务截止日期提前时，你会：',
+      options: [
+        { key: 'A', text: '保持冷静，重新规划优先级和时间安排', score: 4 },
+        { key: 'B', text: '感到焦虑，但会加倍努力赶工', score: 3 },
+        { key: 'C', text: '寻求同事帮助或向上级申请延期', score: 2 },
+        { key: 'D', text: '加班加点，牺牲休息时间完成', score: 1 }
+      ]},
+    { id: 6, dim: 'stress', text: '当你的工作成果受到批评时，你的第一反应是：',
+      options: [
+        { key: 'A', text: '虚心接受，询问具体改进建议', score: 4 },
+        { key: 'B', text: '理性分析批评是否合理，有则改之', score: 3 },
+        { key: 'C', text: '感到沮丧，需要时间平复心情', score: 2 },
+        { key: 'D', text: '为自己辩护，解释当时的情况', score: 1 }
+      ]},
+    { id: 7, dim: 'stress', text: '在高强度工作环境下连续工作一周后，你会：',
+      options: [
+        { key: 'A', text: '依然保持良好状态，高效完成任务', score: 4 },
+        { key: 'B', text: '感到疲惫，但能坚持到周末休息', score: 3 },
+        { key: 'C', text: '效率明显下降，需要适当调整', score: 2 },
+        { key: 'D', text: '已经接近极限，急需休息恢复', score: 1 }
+      ]},
+    { id: 8, dim: 'stress', text: '当同时面临多个重要任务时，你会：',
+      options: [
+        { key: 'A', text: '从容制定计划，按优先级逐一处理', score: 4 },
+        { key: 'B', text: '感到压力，但能合理安排时间', score: 3 },
+        { key: 'C', text: '有些手忙脚乱，需要他人提醒', score: 2 },
+        { key: 'D', text: '感到 overwhelmed，难以抉择', score: 1 }
+      ]},
+    { id: 9, dim: 'adapt', text: '当项目计划突然发生重大变更时，你会：',
+      options: [
+        { key: 'A', text: '快速理解新方向，立即调整工作方案', score: 4 },
+        { key: 'B', text: '先了解变更原因和影响，再做调整', score: 3 },
+        { key: 'C', text: '感到不适应，需要时间接受变化', score: 2 },
+        { key: 'D', text: '担心之前的努力白费，有些抵触', score: 1 }
+      ]},
+    { id: 10, dim: 'adapt', text: '面对从未接触过的新任务或新技术，你会：',
+      options: [
+        { key: 'A', text: '充满好奇，主动学习并尝试应用', score: 4 },
+        { key: 'B', text: '谨慎评估，系统学习后再实践', score: 3 },
+        { key: 'C', text: '感到紧张，但会寻求帮助完成', score: 2 },
+        { key: 'D', text: '有些抗拒，希望做熟悉的工作', score: 1 }
+      ]},
+    { id: 11, dim: 'adapt', text: '当客户临时改变需求时，你会：',
+      options: [
+        { key: 'A', text: '灵活调整方案，满足新需求', score: 4 },
+        { key: 'B', text: '与客户沟通确认细节，再调整', score: 3 },
+        { key: 'C', text: '担心影响进度，试图说服客户维持原需求', score: 2 },
+        { key: 'D', text: '按客户要求修改，但内心不太情愿', score: 1 }
+      ]},
+    { id: 12, dim: 'adapt', text: '当工作环境或团队结构发生变化时，你会：',
+      options: [
+        { key: 'A', text: '积极适应，快速融入新环境', score: 4 },
+        { key: 'B', text: '观察一段时间，逐步调整自己', score: 3 },
+        { key: 'C', text: '感到不安，怀念原来的状态', score: 2 },
+        { key: 'D', text: '产生抵触情绪，考虑离开', score: 1 }
+      ]},
+    { id: 13, dim: 'detail', text: '在完成一份重要报告后，你会：',
+      options: [
+        { key: 'A', text: '反复检查至少三遍，确保无误', score: 4 },
+        { key: 'B', text: '仔细检查一遍，重点关注关键数据', score: 3 },
+        { key: 'C', text: '快速浏览一遍，相信自己的判断', score: 2 },
+        { key: 'D', text: '交给同事帮忙复核', score: 1 }
+      ]},
+    { id: 14, dim: 'detail', text: '在处理大量数据或信息时，你通常：',
+      options: [
+        { key: 'A', text: '建立系统化流程，逐项核对', score: 4 },
+        { key: 'B', text: '使用工具辅助，提高效率同时保证准确', score: 3 },
+        { key: 'C', text: '依靠经验和直觉，快速处理', score: 2 },
+        { key: 'D', text: '分批次处理，避免疲劳导致错误', score: 1 }
+      ]},
+    { id: 15, dim: 'detail', text: '当你发现文档中有小错误（如错别字）时，你会：',
+      options: [
+        { key: 'A', text: '立即修正，即使不是自己负责的部分', score: 4 },
+        { key: 'B', text: '如果是自己负责的会修正，否则视情况而定', score: 3 },
+        { key: 'C', text: '觉得不重要，除非影响理解', score: 2 },
+        { key: 'D', text: '可能不会注意到', score: 1 }
+      ]},
+    { id: 16, dim: 'patience', text: '当需要向同事或客户反复解释同一个问题时，你会：',
+      options: [
+        { key: 'A', text: '保持耐心，换不同方式解释直到对方理解', score: 4 },
+        { key: 'B', text: '耐心解释两三次，如果还不明白会寻求其他方法', score: 3 },
+        { key: 'C', text: '感到有些烦躁，但还是会继续解释', score: 2 },
+        { key: 'D', text: '容易失去耐心，希望对方自己能理解', score: 1 }
+      ]},
+    { id: 17, dim: 'patience', text: '面对繁琐重复的工作任务时，你会：',
+      options: [
+        { key: 'A', text: '保持稳定节奏，认真完成每一项', score: 4 },
+        { key: 'B', text: '寻找优化方法，提高效率减少重复', score: 3 },
+        { key: 'C', text: '感到枯燥，需要不断激励自己', score: 2 },
+        { key: 'D', text: '容易分心，经常出错需要返工', score: 1 }
+      ]},
+    { id: 18, dim: 'patience', text: '当项目进展缓慢，长期看不到成果时，你会：',
+      options: [
+        { key: 'A', text: '保持信心，持续投入精力', score: 4 },
+        { key: 'B', text: '定期复盘，调整策略继续推进', score: 3 },
+        { key: 'C', text: '感到焦虑，怀疑方向是否正确', score: 2 },
+        { key: 'D', text: '动力下降，考虑放弃或转做其他项目', score: 1 }
+      ]},
+    { id: 19, dim: 'resp', text: '当你承诺了一个任务但发现自己可能无法按时完成时，你会：',
+      options: [
+        { key: 'A', text: '提前告知相关人员，说明情况并提供替代方案', score: 4 },
+        { key: 'B', text: '尽力赶工，争取按时完成', score: 3 },
+        { key: 'C', text: '等到最后期限再说，看能否赶上', score: 2 },
+        { key: 'D', text: '希望别人不会注意到延期', score: 1 }
+      ]},
+    { id: 20, dim: 'resp', text: '对于不属于你职责范围内但影响团队的问题，你会：',
+      options: [
+        { key: 'A', text: '主动介入解决，因为关乎整体利益', score: 4 },
+        { key: 'B', text: '提醒相关负责人，必要时提供帮助', score: 3 },
+        { key: 'C', text: '视情况而定，如果影响不大就不管', score: 2 },
+        { key: 'D', text: '认为不是自己的事，不主动过问', score: 1 }
+      ]},
+    { id: 21, dim: 'resp', text: '下班后发现工作中有一个疏漏，你会：',
+      options: [
+        { key: 'A', text: '立即返回处理或第二天一早优先解决', score: 4 },
+        { key: 'B', text: '评估严重性，决定是否当晚处理', score: 3 },
+        { key: 'C', text: '第二天再处理，反正不影响当天', score: 2 },
+        { key: 'D', text: '希望没人发现，或者等问题暴露再说', score: 1 }
+      ]},
+    { id: 22, dim: 'resp', text: '当团队成员未能按时完成任务影响整体进度时，你会：',
+      options: [
+        { key: 'A', text: '主动协助，共同解决问题', score: 4 },
+        { key: 'B', text: '督促对方加快进度，提供必要支持', score: 3 },
+        { key: 'C', text: '向上级反映，让领导协调', score: 2 },
+        { key: 'D', text: '做好自己的部分，不管其他人', score: 1 }
+      ]},
+    { id: 23, dim: 'empathy', text: '当同事情绪低落影响工作时，你会：',
+      options: [
+        { key: 'A', text: '主动关心，倾听并提供支持', score: 4 },
+        { key: 'B', text: '适当询问，给予理解和鼓励', score: 3 },
+        { key: 'C', text: '注意到但不太知道如何帮助', score: 2 },
+        { key: 'D', text: '专注于自己的工作，避免被影响', score: 1 }
+      ]},
+    { id: 24, dim: 'empathy', text: '在与客户沟通时，你更注重：',
+      options: [
+        { key: 'A', text: '理解客户的真实需求和感受', score: 4 },
+        { key: 'B', text: '专业地解决问题，满足明确要求', score: 3 },
+        { key: 'C', text: '高效完成任务，节省双方时间', score: 2 },
+        { key: 'D', text: '按照公司规定和流程执行', score: 1 }
+      ]},
+    { id: 25, dim: 'empathy', text: '当团队成员之间发生冲突时，你会：',
+      options: [
+        { key: 'A', text: '主动调解，帮助双方理解彼此立场', score: 4 },
+        { key: 'B', text: '客观分析，提供中立建议', score: 3 },
+        { key: 'C', text: '尽量避免卷入，让当事人自己解决', score: 2 },
+        { key: 'D', text: '站在自己认同的一方', score: 1 }
+      ]},
+    { id: 26, dim: 'empathy', text: '当看到他人遇到困难时，你会：',
+      options: [
+        { key: 'A', text: '主动提供帮助，即使需要付出额外精力', score: 4 },
+        { key: 'B', text: '在能力范围内提供协助', score: 3 },
+        { key: 'C', text: '看情况而定，如果方便就帮忙', score: 2 },
+        { key: 'D', text: '认为各人有各人的难处，不便干涉', score: 1 }
+      ]},
+    { id: 27, dim: 'service', text: '当客户提出超出常规的要求时，你会：',
+      options: [
+        { key: 'A', text: '尽力满足，寻找创造性解决方案', score: 4 },
+        { key: 'B', text: '评估可行性，在合理范围内协助', score: 3 },
+        { key: 'C', text: '按规定拒绝，但可以推荐其他方式', score: 2 },
+        { key: 'D', text: '直接拒绝，说明不符合政策', score: 1 }
+      ]},
+    { id: 28, dim: 'service', text: '你认为优质服务的核心是：',
+      options: [
+        { key: 'A', text: '超越客户期望，提供惊喜体验', score: 4 },
+        { key: 'B', text: '准确理解需求，专业高效解决', score: 3 },
+        { key: 'C', text: '态度友好，让客户感到舒适', score: 2 },
+        { key: 'D', text: '按标准流程执行，不出错即可', score: 1 }
+      ]},
+    { id: 29, dim: 'service', text: '当收到客户投诉时，你会：',
+      options: [
+        { key: 'A', text: '真诚道歉，深入了解问题根源并彻底解决', score: 4 },
+        { key: 'B', text: '礼貌回应，按流程处理并跟进', score: 3 },
+        { key: 'C', text: '解释原因，希望客户理解', score: 2 },
+        { key: 'D', text: '转交给专门部门处理', score: 1 }
+      ]},
+    { id: 30, dim: 'service', text: '在服务过程中，如果发现可以改进的地方，你会：',
+      options: [
+        { key: 'A', text: '主动提出改进建议并推动实施', score: 4 },
+        { key: 'B', text: '记录下来，在合适时机提出', score: 3 },
+        { key: 'C', text: '觉得多一事不如少一事', score: 2 },
+        { key: 'D', text: '认为这不是自己的责任', score: 1 }
+      ]}
+];
+
+const scenes = [
+    {
+        id: 1, type: 'eq', title: '场景一：拒绝上司的不合理要求',
+        role: '已连续加班多日的员工，精疲力尽',
+        aiRole: '你的上司',
+        desc: '周五下午5点，上司把一份耗时至少5小时的紧急任务交给你，要求周一上午完成，且暗示"能者多劳"。',
+        target: '练习目标：高情商拒绝，不是硬顶，而是陈述事实与后果，同时提出部分解决方案，保护关系又守住边界。',
+        opening: '现在是周五下午5点，这有一份复杂的报告，很紧急，周一上午就要，你能力强，我知道你很累，但辛苦一下你熬一熬搞定它。',
+        maxScore: 30,
+        systemPrompt: '你扮演一位上司，周五下午5点给员工布置紧急任务。员工已连续加班多日，精疲力尽。你要根据员工的回复做出真实、有挑战性的回应。如果员工拒绝得太生硬，你可以表现出不满；如果员工提出了好的替代方案，你可以表示接受并调整要求。始终保持上司的身份和语气，不要暴露你是AI。回复要简短，像微信聊天一样自然。'
+    },
+    {
+        id: 2, type: 'adapt', title: '场景二：应对孩子的"小报告"',
+        role: '线上老师',
+        aiRole: '家长',
+        desc: '你刚因为纪律问题在课堂上批评了一个学生。下课后，家长微信找你投诉。',
+        target: '练习目标：为课堂管理行为做温和解释，不否认孩子的感受，但也要还原管理情境，最终把焦点拉回孩子的成长需求。',
+        opening: '老师，孩子回家很伤心，说你当着全班的面凶他。你能不能用更温柔的方式？',
+        maxScore: 30,
+        systemPrompt: '你扮演一位心疼孩子的家长。孩子回家说老师当着全班面"凶"他了，你很生气，来找老师理论。你要根据老师的回复做出真实反应：如果老师态度好、解释清楚，你可以逐渐缓和；如果老师否认或态度强硬，你可以更加激动。始终保持家长的身份和语气，像微信聊天一样自然，不要暴露你是AI。回复要简短。'
+    },
+    {
+        id: 3, type: 'stress', title: '场景三：讲授内容被学生当场纠错',
+        role: '线上班课老师',
+        aiRole: '学生',
+        desc: '直播时你讲得正投入，一个学生突然开麦指出你公式写错了，聊天区开始有人附和。',
+        target: '练习目标：大方认错而不失权威，把错误转化为一次"如何对待错误"的示范，同时快速纠正并继续推进课程进度。',
+        opening: '老师，你刚才讲的那个公式写错了，应该是负号不是正号，后面推导全反了。',
+        maxScore: 40,
+        systemPrompt: '你扮演一个眼尖的学生，在直播课上发现老师公式写错了。你当众指出错误后，要根据老师的回应做出反应：如果老师大方承认并表扬你，你可以表示理解和敬佩；如果老师找借口或态度不好，你可以继续追问或表达不满。始终保持学生的身份和语气，像课堂互动一样自然，不要暴露你是AI。回复要简短。'
+    }
+];
+
+const dimNames = {
+    eq: '情商', stress: '抗压', adapt: '应变', detail: '细心',
+    patience: '耐心', resp: '责任心', empathy: '共情', service: '服务意识'
+};
+const dimCounts = { eq: 4, stress: 4, adapt: 4, detail: 3, patience: 3, resp: 4, empathy: 4, service: 4 };
+
+// Kimi API 通过后端 /api/chat 代理调用，Key 保存在服务器环境变量中
+
+// ==================== 全局状态 ====================
+let userName = '', userCity = '';
+let questions = [];
+let currentQIndex = 0;
+let answers = {};
+let currentSceneIndex = 0;
+let sceneMessages = {};
+let sceneRoundCount = {};
+let sceneScores = {};
+let isWaitingAI = false;
+
+// ==================== 工具函数 ====================
+function shuffleArray(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+function showPage(id) {
+    ['homePage', 'quizPage', 'chatPage', 'resultPage'].forEach(p => document.getElementById(p).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    window.scrollTo(0, 0);
+}
+
+// ==================== 主页逻辑 ====================
+function startTest() {
+    userName = document.getElementById('userName').value.trim();
+    userCity = document.getElementById('userCity').value.trim();
+    if (!userName || !userCity) { alert('请填写姓名和城市后再开始测试'); return; }
+    questions = rawQuestions.map(q => ({ ...q, options: shuffleArray(q.options) }));
+    currentQIndex = 0; answers = {};
+    renderQuiz(); showPage('quizPage');
+}
+
+// ==================== 选择题逻辑 ====================
+function renderQuiz() {
+    const container = document.getElementById('quizContainer');
+    const q = questions[currentQIndex];
+    document.getElementById('quizProgress').textContent = (currentQIndex + 1) + ' / ' + questions.length;
+    document.getElementById('quizProgressBar').style.width = (((currentQIndex + 1) / questions.length) * 100) + '%';
+    document.getElementById('quizPrevBtn').disabled = currentQIndex === 0;
+    document.getElementById('quizNextBtn').textContent = currentQIndex === questions.length - 1 ? '完成，进入场景模拟' : '下一题';
+    const dimLabel = dimNames[q.dim];
+    const selected = answers[q.id];
+    container.innerHTML = `
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 slide-in">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="bg-primary-100 text-primary-700 px-3 py-1 rounded-full text-xs font-medium">${dimLabel}</span>
+                <span class="text-gray-400 text-xs">第 ${currentQIndex + 1} 题</span>
+            </div>
+            <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-6">${q.text}</h3>
+            <div class="space-y-3">
+                ${q.options.map((opt, idx) => `
+                    <div onclick="selectOption(${q.id}, ${idx})" 
+                        class="option-card cursor-pointer p-4 rounded-xl border-2 transition ${selected === idx ? 'selected' : 'border-gray-100 hover:border-primary-200'}">
+                        <div class="flex items-start gap-3">
+                            <span class="w-8 h-8 rounded-full bg-primary-50 text-primary-600 flex items-center justify-center font-bold text-sm shrink-0 ${selected === idx ? 'bg-primary-500 text-white' : ''}">
+                                ${String.fromCharCode(65 + idx)}
+                            </span>
+                            <span class="text-gray-700 pt-1">${opt.text}</span>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>`;
+}
+function selectOption(qid, idx) { answers[qid] = idx; renderQuiz(); }
+function nextQuiz() {
+    if (answers[questions[currentQIndex].id] === undefined) { alert('请先选择一个选项'); return; }
+    if (currentQIndex < questions.length - 1) { currentQIndex++; renderQuiz(); }
+    else {
+        currentSceneIndex = 0;
+        sceneMessages = { 0: [], 1: [], 2: [] };
+        sceneRoundCount = { 0: 0, 1: 0, 2: 0 };
+        sceneScores = { 0: 0, 1: 0, 2: 0 };
+        initChat(); showPage('chatPage');
+    }
+}
+function prevQuiz() { if (currentQIndex > 0) { currentQIndex--; renderQuiz(); } }
+
+// ==================== 场景模拟逻辑（Kimi API）====================
+function initChat() {
+    const scene = scenes[currentSceneIndex];
+    document.getElementById('chatTitle').textContent = scene.title;
+    document.getElementById('chatSubtitle').textContent = '场景 ' + (currentSceneIndex + 1) + '/3 · ' + (scene.type === 'eq' ? '情商' : scene.type === 'adapt' ? '应变' : '抗压');
+
+    // 更新场景背景信息
+    document.getElementById('sceneTypeBadge').textContent = (scene.type === 'eq' ? '情商维度' : scene.type === 'adapt' ? '应变维度' : '抗压维度');
+    document.getElementById('sceneDesc').textContent = scene.desc;
+    document.getElementById('sceneTarget').textContent = scene.target;
+
+    const msgs = document.getElementById('chatMessages');
+    msgs.innerHTML = '';
+
+    // 显示角色提示
+    addSystemMessage('📋 你的角色：' + scene.role);
+    addSystemMessage('🎭 对方角色：' + scene.aiRole);
+
+    // AI开场白（延迟显示，让用户先看到背景）
+    setTimeout(() => {
+        addAIMessage(scene.opening);
+    }, 800);
+
+    updateSceneNavButtons();
+}
+
+function addAIMessage(text) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'flex items-start gap-3 fade-in';
+    div.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        <div class="chat-bubble-left bg-white rounded-2xl rounded-tl-none px-4 py-3 text-gray-800 text-sm leading-relaxed shadow-sm">${text}</div>`;
+    msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addUserMessage(text) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'flex items-start gap-3 justify-end fade-in';
+    div.innerHTML = `
+        <div class="chat-bubble-right bg-blue-500 rounded-2xl rounded-tr-none px-4 py-3 text-white text-sm leading-relaxed shadow-sm">${text}</div>
+        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+            <span class="text-blue-600 text-xs font-bold">我</span>
+        </div>`;
+    msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addSystemMessage(text) {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'flex justify-center fade-in';
+    div.innerHTML = `<div class="bg-white/80 text-gray-500 text-xs px-4 py-2 rounded-full border border-gray-200 shadow-sm">${text}</div>`;
+    msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+    const msgs = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.id = 'typingIndicator';
+    div.className = 'flex items-start gap-3 fade-in';
+    div.innerHTML = `
+        <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+        </div>
+        <div class="bg-white rounded-2xl rounded-tl-none px-4 py-3 shadow-sm">
+            <div class="flex gap-1">
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+            </div>
+        </div>`;
+    msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+
+// ==================== Kimi API 调用（通过后端代理）====================
+async function callKimiAPI(messages, systemPrompt) {
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages, systemPrompt })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Backend proxy error:', errorData);
+            throw new Error('API请求失败: ' + (errorData.error || response.status));
+        }
+
+        const data = await response.json();
+        return data.content.trim();
+    } catch (error) {
+        console.error('callKimiAPI failed:', error);
+        return null;
+    }
+}
+
+// 备用本地回复（API失败时使用）
+function getLocalResponse(userText, scene) {
+    const lower = userText.toLowerCase();
+    const responses = scene.type === 'eq' ? [
+        { k: '累|辛苦|加班|身体|健康|受不了', r: '我理解你的辛苦，但这个报告真的很重要，客户那边催得紧。你看能不能周末抽点时间？我可以协调其他人帮你分担一部分。' },
+        { k: '计划|安排|时间|周末|已有|私事', r: '我周末确实有安排了，而且这周已经连续加班好几天了。不过我可以周一早上早点来，先把框架搭好，然后我们一起看看能不能找到更高效的完成方式？' },
+        { k: '替代|方案|建议|帮忙|协调|其他人', r: '你这个想法不错。那这样，我让小李协助你，他周末有空。你们分工合作，周一上午我来看初稿，有问题我们再调整。' },
+        { k: '拒绝|不行|做不了|不可能', r: '你这是什么态度？团队需要你的时候你就推脱？大家都很累，但工作还是要完成的。' },
+        { k: '质量|效率|状态|不好|影响', r: '你说得有道理，疲劳状态下确实容易出错。那这样，报告的核心部分你先做，其他部分我让实习生整理数据，你周一早上来整合一下。' },
+        { d: true, r: '嗯，我明白你的意思。那我们再想想办法，看看怎么能在保证质量的前提下完成这个任务。' }
+    ] : scene.type === 'adapt' ? [
+        { k: '抱歉|对不起|理解|感受|心疼', r: '谢谢你的反馈，我能理解孩子回家伤心你有多心疼。不过我想了解一下，孩子有没有跟你说具体发生了什么事？' },
+        { k: '纪律|规则|课堂|管理|行为|上课', r: '是的，今天课堂上确实需要提醒他注意纪律。当时他在课堂上多次打断其他同学发言，我提高了音量是为了让全班都能听清楚规则。' },
+        { k: '方式|方法|温柔|鼓励|教育', r: '我非常认同鼓励式教育，平时我也一直在用积极的方式引导孩子。但课堂纪律是底线，如果放任不管，对其他认真听课的孩子也不公平。' },
+        { k: '成长|学习|帮助|改进|进步', r: '是的，我们的目标是一致的——希望孩子能健康成长。课堂规则其实是帮助他学会尊重他人、自我管理。' },
+        { k: '否认|没有|误会|冤枉', r: '我并没有否认孩子的感受，他确实可能觉得委屈。但事情的经过可能和他描述的不太一样，我想还原一下当时的情境。' },
+        { d: true, r: '我理解你的担心。教育确实需要讲究方式方法，我们可以一起探讨如何更好地帮助孩子成长。' }
+    ] : [
+        { k: '谢谢|感谢|指出|发现|认真|仔细', r: '哇，太感谢你了！你观察得非常仔细，确实是老师写错了。这说明你一直在认真跟着我的思路走，给你点个大大的赞！' },
+        { k: '承认|错了|失误|疏忽|备课', r: '老师也是人，也会有疏忽的时候。这个错误是我备课时的疏忽，我应该更仔细地检查。但这也给了我们一个很好的机会——我们来看看，如果符号错了，后面的推导会出现什么问题？' },
+        { k: '纠正|修改|改正|重新|推导', r: '好的，我们把符号改过来，重新推导一遍。大家注意看，负号改过来之后，这一步的结果应该是……好了，现在推导就通顺了。' },
+        { k: '借口|解释|原因|因为|所以', r: '我不找借口，错了就是错了。但我希望大家从这个错误中学到两件事：第一，任何人都会犯错；第二，发现错误后要勇于指出。' },
+        { k: '权威|面子|尴尬|难堪', r: '谢谢你的提醒，这不会让我难堪，反而让我更信任你们。一个敢于指出老师错误的学生，才是真正在思考的学生。' },
+        { d: true, r: '你说得对，我确实写错了。让我们马上纠正过来，继续上课。大家都要学习这种认真仔细的态度！' }
+    ];
+
+    for (const resp of responses) {
+        if (resp.d) continue;
+        const keywords = resp.k.split('|');
+        if (keywords.some(k => lower.includes(k))) return resp.r;
+    }
+    const defaultResp = responses.find(r => r.d);
+    return defaultResp ? defaultResp.r : '我明白了，请继续说。';
+}
+
+function scoreUserResponse(userText, scene) {
+    const lower = userText.toLowerCase();
+    let score = 0;
+    if (scene.type === 'eq') {
+        if (lower.includes('理解') || lower.includes('抱歉') || lower.includes('感谢')) score += 5;
+        if (lower.includes('方案') || lower.includes('建议') || lower.includes('替代') || lower.includes('协调')) score += 8;
+        if (lower.includes('累') || lower.includes('身体') || lower.includes('状态') || lower.includes('质量')) score += 5;
+        if (lower.includes('拒绝') || lower.includes('不行') || lower.includes('做不了')) score -= 5;
+        if (lower.includes('态度') || lower.includes('情绪') || lower.includes('生气')) score -= 3;
+    } else if (scene.type === 'adapt') {
+        if (lower.includes('抱歉') || lower.includes('理解') || lower.includes('感受')) score += 5;
+        if (lower.includes('纪律') || lower.includes('规则') || lower.includes('课堂') || lower.includes('管理')) score += 5;
+        if (lower.includes('成长') || lower.includes('帮助') || lower.includes('改进') || lower.includes('教育')) score += 8;
+        if (lower.includes('否认') || lower.includes('没有') || lower.includes('冤枉')) score -= 5;
+        if (lower.includes('方式') || lower.includes('方法') || lower.includes('温柔')) score += 3;
+    } else {
+        if (lower.includes('谢谢') || lower.includes('感谢') || lower.includes('指出')) score += 5;
+        if (lower.includes('承认') || lower.includes('错了') || lower.includes('疏忽')) score += 8;
+        if (lower.includes('纠正') || lower.includes('修改') || lower.includes('推导')) score += 5;
+        if (lower.includes('借口') || lower.includes('因为') || lower.includes('解释')) score -= 3;
+        if (lower.includes('认真') || lower.includes('仔细') || lower.includes('质疑')) score += 5;
+    }
+    return Math.max(0, Math.min(scene.maxScore / 4, score));
+}
+
+async function sendMessage() {
+    if (isWaitingAI) return;
+
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+    addUserMessage(text);
+
+    const scene = scenes[currentSceneIndex];
+    sceneMessages[currentSceneIndex].push({ role: 'user', text });
+    sceneRoundCount[currentSceneIndex]++;
+
+    // 评分
+    const roundScore = scoreUserResponse(text, scene);
+    sceneScores[currentSceneIndex] += roundScore;
+
+    // 禁用发送按钮
+    isWaitingAI = true;
+    document.getElementById('sendBtn').classList.add('opacity-50', 'cursor-not-allowed');
+    showTyping();
+
+    // 调用 Kimi API
+    const aiText = await callKimiAPI(sceneMessages[currentSceneIndex], scene.systemPrompt);
+
+    hideTyping();
+    isWaitingAI = false;
+    document.getElementById('sendBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+
+    if (aiText) {
+        addAIMessage(aiText);
+        sceneMessages[currentSceneIndex].push({ role: 'ai', text: aiText });
+    } else {
+        // API 失败，使用本地备用回复
+        const fallbackText = getLocalResponse(text, scene);
+        addAIMessage(fallbackText + '（网络连接异常，已切换本地模式）');
+        sceneMessages[currentSceneIndex].push({ role: 'ai', text: fallbackText });
+    }
+
+    // 检查是否达到结束条件
+    const hasSolution = text.includes('方案') || text.includes('建议') || text.includes('解决') || 
+                       text.includes('替代') || text.includes('协调') || text.includes('办法') ||
+                       text.includes('纠正') || text.includes('修改') || text.includes('推导');
+    if (sceneRoundCount[currentSceneIndex] >= 4 || hasSolution) {
+        setTimeout(() => { addSystemMessage('✅ 本题对话已结束，可点击上方"下一题"继续'); }, 1000);
+    }
+}
+
+function updateSceneNavButtons() {
+    document.getElementById('scenePrevBtn').disabled = currentSceneIndex === 0;
+    document.getElementById('sceneNextBtn').textContent = currentSceneIndex === scenes.length - 1 ? '查看结果' : '下一题';
+}
+
+function prevScene() { if (currentSceneIndex > 0) { currentSceneIndex--; initChat(); } }
+
+function nextScene() { 
+    if (currentSceneIndex < scenes.length - 1) { currentSceneIndex++; initChat(); } 
+    else { showResults(); } 
+}
+
+// ==================== 结果页逻辑 ====================
+function calculateQuizScores() {
+    const dimScores = {};
+    for (const dim in dimNames) dimScores[dim] = 0;
+    for (const q of questions) {
+        const selectedIdx = answers[q.id];
+        if (selectedIdx !== undefined) dimScores[q.dim] += q.options[selectedIdx].score;
+    }
+    const dimPercent = {};
+    for (const dim in dimScores) {
+        const max = dimCounts[dim] * 4;
+        dimPercent[dim] = Math.round((dimScores[dim] / max) * 100);
+    }
+    const totalRaw = Object.values(dimScores).reduce((a, b) => a + b, 0);
+    const totalPercent = Math.round((totalRaw / 120) * 100);
+    return { dimPercent, totalPercent, totalRaw };
+}
+
+function calculateSceneScores() {
+    const scores = {};
+    for (let i = 0; i < scenes.length; i++) {
+        const scene = scenes[i];
+        let score = sceneScores[i];
+        const rounds = sceneRoundCount[i];
+        if (rounds >= 3) score += 3;
+        if (rounds >= 4) score += 2;
+        const msgs = sceneMessages[i];
+        const userTexts = msgs.filter(m => m.role === 'user').map(m => m.text.toLowerCase());
+        if (scene.type === 'eq') {
+            if (userTexts.some(t => t.includes('方案') || t.includes('建议'))) score += 5;
+            if (userTexts.some(t => t.includes('理解') && t.includes('感谢'))) score += 3;
+            scores.eq = Math.min(30, Math.round(score));
+        } else if (scene.type === 'adapt') {
+            if (userTexts.some(t => t.includes('成长') || t.includes('帮助'))) score += 5;
+            if (userTexts.some(t => t.includes('纪律') || t.includes('规则'))) score += 3;
+            scores.adapt = Math.min(30, Math.round(score));
+        } else {
+            if (userTexts.some(t => t.includes('承认') || t.includes('错了'))) score += 5;
+            if (userTexts.some(t => t.includes('纠正') || t.includes('推导'))) score += 3;
+            scores.stress = Math.min(40, Math.round(score));
+        }
+    }
+    return scores;
+}
+
+function generateComments(quizScores, sceneScores, totalScore) {
+    const comments = [];
+
+    // ===== 总体评价 =====
+    let overall = '';
+    if (totalScore >= 85) {
+        overall = userName + '，你的整体表现非常出色！无论是30道选择题的自我认知，还是3道场景模拟的实际应对，你都展现了很高的职场软技能成熟度。你的第一反应往往既合理又有人情味，这是非常难得的综合素质。';
+    } else if (totalScore >= 70) {
+        overall = userName + '，你的整体表现良好，具备扎实的职场软技能基础。在大多数情境下，你都能做出合理的判断和应对。继续保持这种积极的学习态度，你会越来越出色。';
+    } else if (totalScore >= 55) {
+        overall = userName + '，你的表现处于中等水平，有一定的职场软技能基础，但在某些方面还有较大的提升空间。好消息是，软技能是可以通过刻意练习来快速提升的，你已经迈出了第一步。';
+    } else {
+        overall = userName + '，这次测试显示你在职场软技能方面还有较多需要学习和提升的地方。不过别担心，每个人都是从零开始的。关键是意识到自己的盲点，然后有针对性地去练习。';
+    }
+    comments.push({ title: '总体评价', content: overall });
+
+    // ===== 选择题各维度分析 =====
+    const dimComments = [];
+    for (const dim in dimNames) {
+        const score = quizScores[dim];
+        let text = '';
+        if (score >= 85) text = dimNames[dim] + '（' + score + '分）：这是你的核心优势区。你在该维度上的自我认知非常清晰，做出的选择体现了成熟稳定的职业素养。建议你在团队中多承担与该维度相关的任务，发挥榜样作用。';
+        else if (score >= 70) text = dimNames[dim] + '（' + score + '分）：基础扎实，表现良好。你在该维度上具备不错的能力，但在某些边缘情境下可能还需要更果断或更灵活的应对。';
+        else if (score >= 55) text = dimNames[dim] + '（' + score + '分）：表现一般，有提升空间。这个维度可能是你的"舒适区边缘"——平时够用，但遇到高压或复杂情境时容易暴露短板。建议有意识地观察和反思。';
+        else text = dimNames[dim] + '（' + score + '分）：需要重点关注。这个维度可能是你目前最大的盲点，也是成长潜力最大的地方。建议从日常小事开始刻意练习，比如每天记录一个相关场景的处理方式。';
+        dimComments.push(text);
+    }
+    comments.push({ title: '选择题各维度分析', content: dimComments.join('\n\n') });
+
+    // ===== 场景模拟深度点评（结合答题者实际回复） =====
+    const sceneComments = [];
+
+    // --- 情商场景点评 ---
+    const eqMsgs = sceneMessages[0] || [];
+    const eqUserTexts = eqMsgs.filter(m => m.role === 'user').map(m => m.text);
+    const eqScore = sceneScores.eq || 0;
+
+    let eqText = '【情商场景 · 拒绝上司的不合理要求】得分 ' + eqScore + '/30\n\n';
+
+    if (eqUserTexts.length === 0) {
+        eqText += '你未参与该场景的对话。高情商的拒绝是一门艺术，核心在于"温和而坚定"——既不让对方难堪，也不委屈自己。建议练习使用"我理解您的需求，同时我也需要说明我的情况…"这样的句式。';
+    } else {
+        eqText += '你的回复记录：\n';
+        eqUserTexts.forEach((t, i) => { eqText += '  第' + (i+1) + '轮："' + t.substring(0, 80) + (t.length > 80 ? '…' : '') + '"\n'; });
+        eqText += '\n';
+
+        // 分析具体回复内容
+        const hasUnderstand = eqUserTexts.some(t => /理解|明白|知道|清楚/i.test(t));
+        const hasSolution = eqUserTexts.some(t => /方案|建议|替代|协调|帮忙|分工/i.test(t));
+        const hasBoundary = eqUserTexts.some(t => /累|身体|状态|质量|效率|时间|安排/i.test(t));
+        const hasReject = eqUserTexts.some(t => /拒绝|不行|做不了|不可能|不干/i.test(t));
+        const hasEmotion = eqUserTexts.some(t => /生气|情绪|态度|委屈|不满/i.test(t));
+
+        if (eqScore >= 25) {
+            eqText += '点评：你的表现堪称高情商的典范！';
+            if (hasUnderstand) eqText += '你首先表达了对上司处境的理解，这让对方感到被尊重；';
+            if (hasBoundary) eqText += '你清晰地陈述了自己的边界（身体/时间/质量），没有含糊其辞；';
+            if (hasSolution) eqText += '最关键的是你提出了建设性的替代方案，把"拒绝问题"转化为了"解决问题"。';
+            eqText += '\n\n这种"我理解您的需求 + 我的实际情况 + 替代方案"的三段式结构，是职场沟通的黄金公式。你已经掌握得很好了，建议在其他场景中也多运用。';
+        } else if (eqScore >= 19) {
+            eqText += '点评：你基本掌握了"温和拒绝"的框架，但还有精进空间。';
+            if (hasUnderstand && !hasSolution) eqText += '你表达了理解，但缺少具体的替代方案。上司听到"我理解"后，最想知道的是"那怎么办"。下次可以尝试在表达理解后，主动提出1-2个可行的替代方案。';
+            else if (!hasUnderstand && hasBoundary) eqText += '你陈述了自己的困难，但缺少对上司处境的共情。建议先说一句"我知道这个报告很紧急，客户那边催得紧"，再说明自己的情况，这样对方更容易接受。';
+            else if (hasSolution && !hasBoundary) eqText += '你提出了方案，但没有充分说明为什么自己无法承担。让对方理解你的"不能"，比直接给方案更有说服力。';
+            else eqText += '你的回应方向是对的，但在"共情-边界-方案"三个要素的平衡上还可以更精准。建议复盘时问自己：我说的每一句话，是在拉近关系还是在推开关系？';
+            eqText += '\n\n建议：下次遇到类似情境，可以尝试这个结构——①认可对方需求 → ②陈述客观事实（而非主观抱怨）→ ③提出替代方案 → ④表达愿意配合的态度。';
+        } else if (eqScore >= 10) {
+            eqText += '点评：你有拒绝的意识，但方式可能需要调整。';
+            if (hasReject) eqText += '你的回复中出现了比较直接的拒绝词汇，这容易让对方感到被冒犯。记住：拒绝的是任务，不是拒绝人。可以尝试把"我不行"换成"我目前的状况可能无法保证质量，但我可以…"。';
+            else if (hasEmotion) eqText += '你的回复中带有一些情绪化的表达，这在职场沟通中容易让局面升级。建议先处理好自己的情绪，再开口沟通。可以尝试写下来的方式，把情绪发泄在纸上，然后再组织理性的语言。';
+            else eqText += '你的回应比较模糊，既没有明确拒绝，也没有明确接受。这种"暧昧"的态度反而会让双方都感到不舒服。建议练习"温柔而坚定"的表达：语气柔和，但立场清晰。';
+            eqText += '\n\n建议：在拒绝之前，先问自己三个问题——①对方的核心需求是什么？②我的底线在哪里？③有没有双赢的方案？想清楚这三个问题，你的拒绝就会更有力量。';
+        } else {
+            eqText += '点评：这个场景对你来说可能比较有挑战。';
+            if (hasReject) eqText += '你的拒绝方式比较生硬，可能会损害上下级关系。职场中，"会干活"很重要，"会沟通"同样重要。建议多观察那些资深同事是如何委婉表达不同意见的。';
+            else eqText += '你的回应可能过于妥协或回避了核心问题。长期委屈自己接受不合理的要求，不仅会影响工作质量，还会让上司形成"你什么都能接"的错误印象，导致未来更多不合理的要求。';
+            eqText += '\n\n建议：从"小事"开始练习说"不"。比如同事请你帮忙取快递，如果你不方便，可以试着说"我现在手头有个急事，要不你问问其他人？"。从小事积累说"不"的经验和勇气，大事上就会更从容。';
+        }
+    }
+    sceneComments.push(eqText);
+
+    // --- 应变场景点评 ---
+    const adaptMsgs = sceneMessages[1] || [];
+    const adaptUserTexts = adaptMsgs.filter(m => m.role === 'user').map(m => m.text);
+    const adaptScore = sceneScores.adapt || 0;
+
+    let adaptText = '【应变场景 · 应对家长的"小报告"】得分 ' + adaptScore + '/30\n\n';
+
+    if (adaptUserTexts.length === 0) {
+        adaptText += '你未参与该场景的对话。面对家长投诉，核心原则是"先处理心情，再处理事情"。家长来找你，首先是情绪需要被看见，其次才是道理需要被讲清。';
+    } else {
+        adaptText += '你的回复记录：\n';
+        adaptUserTexts.forEach((t, i) => { adaptText += '  第' + (i+1) + '轮："' + t.substring(0, 80) + (t.length > 80 ? '…' : '') + '"\n'; });
+        adaptText += '\n';
+
+        const hasApology = adaptUserTexts.some(t => /抱歉|对不起|不好意思/i.test(t));
+        const hasEmpathy = adaptUserTexts.some(t => /理解|感受|心疼|难过/i.test(t));
+        const hasExplain = adaptUserTexts.some(t => /纪律|规则|课堂|管理|当时|情况/i.test(t));
+        const hasDeny = adaptUserTexts.some(t => /没有|否认|误会|冤枉|不是/i.test(t));
+        const hasGrowth = adaptUserTexts.some(t => /成长|帮助|改进|教育|学习/i.test(t));
+        const hasDefensive = adaptUserTexts.some(t => /但是|可是|不过|然而/i.test(t));
+
+        if (adaptScore >= 25) {
+            adaptText += '点评：你展现了非常专业的应变能力和沟通智慧！';
+            if (hasEmpathy) adaptText += '你首先接纳了家长的情绪，这让对方感到被尊重；';
+            if (hasApology) adaptText += '你为孩子的感受真诚道歉，没有推卸责任；';
+            if (hasExplain) adaptText += '你温和地还原了课堂情境，让家长理解了管理的必要性；';
+            if (hasGrowth) adaptText += '最棒的是你把焦点从"谁对谁错"转向了"如何帮助孩子成长"，这是教育工作者的最高境界。';
+            adaptText += '\n\n你的处理方式让家长既感受到了尊重，又理解了老师的立场，同时还明确了下一步的行动方向。这种"三明治沟通法"（共情-解释-展望）运用得非常娴熟。';
+        } else if (adaptScore >= 19) {
+            adaptText += '点评：你的回应比较得体，能够稳住局面，但在某些环节还可以更细腻。';
+            if (hasEmpathy && hasExplain && !hasGrowth) adaptText += '你做到了共情和解释，但缺少"向前看"的环节。家长在情绪平复后，最想知道的是"接下来怎么办"。建议加上一句"我会继续关注孩子的状态，也请您在家多和他沟通…"。';
+            else if (!hasEmpathy && hasExplain) adaptText += '你急于解释情况，但可能跳过了"接纳情绪"这一步。家长来找你时，情绪是满的，道理是进不去的。建议先说一句"我能理解您心疼孩子的心情，如果我是您，我也会很担心"。';
+            else if (hasApology && !hasExplain) adaptText += '你道歉了，但没有解释管理的必要性。过度道歉会让家长觉得"老师确实做错了"，从而强化孩子的"受害者心态"。道歉要真诚，但也要说明规则的意义。';
+            else if (hasDefensive) adaptText += '你的回复中出现了一些防御性的转折词（"但是""可是"），这会让家长感觉你在找借口。建议把"我理解您的感受，但是…"换成"我理解您的感受，同时我想和您分享一下当时的情况…"。';
+            else adaptText += '你的回应方向是对的，但在"共情-道歉-解释-展望"四个环节的衔接上还可以更流畅。建议每次回复后问自己：家长现在的心情是更好了还是更糟了？';
+            adaptText += '\n\n建议：面对投诉时，可以尝试"情绪四步法"——①复述感受（"您说孩子很伤心，我特别理解"）→ ②真诚道歉（"为此我感到很抱歉"）→ ③还原情境（"当时的情况是…"）→ ④共同展望（"接下来我们可以一起…"）。';
+        } else if (adaptScore >= 10) {
+            adaptText += '点评：你能做出回应，但可能还没有找到最有效的沟通节奏。';
+            if (hasDeny) adaptText += '你的回复中有否认孩子感受的倾向（"我没有凶他""这是误会"）。即使事实如此，否认感受也会让家长更加愤怒。建议先承认"孩子确实可能感到委屈"，再解释原因。';
+            else if (!hasEmpathy && !hasApology) adaptText += '你的回复缺少情感连接，更像是在"讲道理"。但家长此刻需要的不是道理，而是被理解。建议先放下"对错"，专注于"感受"。';
+            else if (hasExplain && hasDefensive) adaptText += '你在解释时带有一些防御姿态，这会让沟通变成"辩论"。记住：你和家长不是对手，而是队友，共同目标是孩子的成长。';
+            else adaptText += '你的回应比较被动，似乎在被家长牵着走。建议主动引导对话方向，把话题从"投诉"转向"合作"。';
+            adaptText += '\n\n建议：下次遇到类似情况，先深呼吸三次，让自己冷静下来。然后问自己：这位家长真正担心的是什么？（通常不是"老师凶了孩子"，而是"孩子是不是被伤害了""老师还关心我的孩子吗"。找到真正的担忧，才能给出真正的安慰。）';
+        } else {
+            adaptText += '点评：这个场景对你来说可能比较有挑战，但每一次挑战都是成长的机会。';
+            if (adaptUserTexts.length > 0) adaptText += '你的回应可能让家长感到更加不满或困惑。面对投诉时，"少说多听"往往比"急于解释"更有效。建议先让家长把话说完，然后用"我听到您说…"来确认理解，最后再回应。';
+            else adaptText += '逃避虽然能暂时避免冲突，但问题不会自动消失。建议从小事开始练习"困难对话"，比如先和同事模拟演练，积累信心后再面对真实场景。';
+            adaptText += '\n\n建议：推荐阅读《非暴力沟通》这本书，它提供了非常实用的沟通框架：观察→感受→需要→请求。掌握这个框架后，你会发现很多"困难对话"其实没那么可怕。';
+        }
+    }
+    sceneComments.push(adaptText);
+
+    // --- 抗压场景点评 ---
+    const stressMsgs = sceneMessages[2] || [];
+    const stressUserTexts = stressMsgs.filter(m => m.role === 'user').map(m => m.text);
+    const stressScore = sceneScores.stress || 0;
+
+    let stressText = '【抗压场景 · 讲授内容被学生当场纠错】得分 ' + stressScore + '/40\n\n';
+
+    if (stressUserTexts.length === 0) {
+        stressText += '你未参与该场景的对话。被当众指出错误确实让人难堪，但处理方式决定了这是"危机"还是"转机"。优秀的老师会把错误变成一次生动的"如何对待错误"的教学示范。';
+    } else {
+        stressText += '你的回复记录：\n';
+        stressUserTexts.forEach((t, i) => { stressText += '  第' + (i+1) + '轮："' + t.substring(0, 80) + (t.length > 80 ? '…' : '') + '"\n'; });
+        stressText += '\n';
+
+        const hasThanks = stressUserTexts.some(t => /谢谢|感谢|表扬|赞|厉害/i.test(t));
+        const hasAdmit = stressUserTexts.some(t => /承认|错了|失误|疏忽|写错|确实/i.test(t));
+        const hasFix = stressUserTexts.some(t => /纠正|修改|改正|重新|推导|改过来/i.test(t));
+        const hasExcuse = stressUserTexts.some(t => /因为|所以|备课|太忙|不小心|一时/i.test(t));
+        const hasTeach = stressUserTexts.some(t => /学习|态度|示范|榜样|错误|犯错/i.test(t));
+        const hasContinue = stressUserTexts.some(t => /继续|上课|推进|进度|时间/i.test(t));
+
+        if (stressScore >= 33) {
+            stressText += '点评：你在高压下展现了卓越的定力和教育智慧！';
+            if (hasThanks) stressText += '你首先表扬了学生的细心和勇气，这不仅化解了尴尬，还树立了"质疑精神值得鼓励"的课堂文化；';
+            if (hasAdmit) stressText += '你大方承认错误，没有找借口，这种坦诚让学生看到了一个真实的、可信赖的老师；';
+            if (hasTeach) stressText += '你把错误转化为教学资源，让学生从中学到了"如何对待错误"——这比公式本身更有价值；';
+            if (hasFix) stressText += '你快速纠正并继续推进，没有让错误占用过多课堂时间；';
+            if (hasContinue) stressText += '你始终把"课程进度"放在心上，展现了优秀的课堂掌控力。';
+            stressText += '\n\n你的处理方式堪称教科书级别！你不仅没有被错误击垮，反而借此提升了课堂氛围和师生关系。这种"化危机为亮点"的能力，是优秀教师的核心竞争力。';
+        } else if (stressScore >= 25) {
+            stressText += '点评：你能够冷静应对突发状况，认错态度良好，但在"升华"这个环节还可以更有创意。';
+            if (hasAdmit && !hasThanks) stressText += '你承认了错误，但缺少对学生的表扬。学生当众指出老师的错误需要很大勇气，你的认可对他来说是巨大的鼓励。建议加一句"你观察得非常仔细，给你点赞！"。';
+            else if (hasThanks && !hasAdmit) stressText += '你表扬了学生，但在承认错误上可以更大方。学生其实不在乎老师犯不犯错，他们在乎的是老师"敢不敢承认"。坦诚比完美更有魅力。';
+            else if (hasAdmit && hasThanks && !hasTeach) stressText += '你做到了承认错误和表扬学生，但还可以再进一步——把这次错误变成一次"如何对待错误"的示范。比如问学生："如果大家在考试中发现自己做错了，应该怎么做？"这样就把个人错误变成了集体学习资源。';
+            else if (!hasContinue) stressText += '你在处理错误上花了较多时间，可能影响课程进度。建议控制在2-3分钟内完成"认错-表扬-纠正-继续"的闭环。';
+            else adaptText += '你的回应方向正确，但在"承认-表扬-教学-纠正-继续"五个环节的节奏把控上还可以更精炼。';
+            stressText += '\n\n建议：下次遇到类似情况，可以尝试"5秒法则"——深呼吸5秒，然后按照"感谢→承认→教学→纠正→继续"的顺序快速处理。记住：学生不会因为老师犯错而看不起老师，但会因为老师"死不认错"而失去尊重。';
+        } else if (stressScore >= 13) {
+            stressText += '点评：你能控制情绪，没有当场崩溃或发火，但应对方式可能停留在"不出错"层面。';
+            if (hasExcuse) stressText += '你的回复中有一些解释性的内容（"因为备课太忙""不小心"）。找借口会让学生觉得"老师在推卸责任"，反而降低威信。建议直接说"是的，我写错了，谢谢你的提醒"，简单有力。';
+            else if (!hasAdmit) stressText += '你没有明确承认错误，可能是在回避或含糊其辞。学生其实很敏锐，他们能感觉到老师是不是在真诚面对。建议练习直接说"我错了"，这三个字的力量超乎想象。';
+            else if (hasAdmit && !hasFix) stressText += '你承认了错误，但没有及时纠正。课堂上的错误就像舞台上的失误，处理得越快，观众越不会在意。建议承认后立即纠正，不要让学生"悬着"。';
+            else stressText += '你的回应比较被动，似乎在被学生的纠错"推着走"。建议主动掌控节奏，把"被纠错"变成"主动示范"。';
+            stressText += '\n\n建议：平时可以多在课堂上有意"制造"一些小错误（比如故意写错一个符号），然后示范如何大方承认和纠正。这样当真实错误发生时，你和学生都已经"排练"过了，不会慌乱。';
+        } else {
+            stressText += '点评：被当众指出错误确实是一个很大的心理挑战，你的反应说明这个情境触发了你的防御机制。';
+            if (stressUserTexts.length > 0) {
+                if (hasExcuse) stressText += '你的回复中解释和借口较多，这其实是内心不安的表现。但学生看到的不是"老师很辛苦"，而是"老师不敢承认错误"。建议下次尝试"零解释"回应：只认错、只感谢、只纠正。';
+                else stressText += '你的回应可能让学生感到尴尬或困惑。面对错误时，"沉默"或"含糊"往往比"错误的回应"更糟。建议提前准备几句"应急话术"，比如"谢谢你的提醒，我确实写错了，我们马上纠正"。';
+            } else {
+                stressText += '逃避虽然能理解，但会让学生感到困惑——"老师为什么不回应？"长期而言，这会影响你的课堂权威。建议从"小错误"开始练习，比如在课后单独向学生承认某个小疏忽，逐步建立"承认错误的勇气"。';
+            }
+            stressText += '\n\n建议：记住一个核心认知——学生不会因为老师犯错而失去尊重，但会因为老师"不敢面对错误"而失去信任。承认错误不是软弱，而是强大。试着在下一次犯错时，对自己说："这是一个展示真实和勇气的机会。"';
+        }
+    }
+    sceneComments.push(stressText);
+
+    comments.push({ title: '场景模拟深度点评（结合你的实际回复）', content: sceneComments.join('\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n') });
+
+    // ===== 成长建议 =====
+    let advice = '';
+    const weakDims = Object.entries(quizScores).filter(([k, v]) => v < 60).map(([k]) => dimNames[k]);
+    const strongDims = Object.entries(quizScores).filter(([k, v]) => v >= 80).map(([k]) => dimNames[k]);
+
+    if (weakDims.length > 0) advice += '根据你的选择题表现，建议你在' + weakDims.join('、') + '方面多加刻意练习。这些维度是你当前最需要关注的成长点。';
+    if (strongDims.length > 0) advice += '你的' + strongDims.join('、') + '是明显优势，建议在工作中主动承担需要这些能力的任务，发挥特长同时带动团队。';
+
+    advice += '\n\n【日常练习建议】\n';
+    advice += '1. 每天记录一个"沟通场景"：今天我和谁沟通了？我说了什么？对方反应如何？如果重来我会怎么说？\n';
+    advice += '2. 每周复盘一次"困难对话"：哪次对话让我不舒服？我的情绪触发点是什么？对方的真实需求是什么？\n';
+    advice += '3. 每月找一个"沟通榜样"：观察身边哪位同事/领导沟通特别舒服？TA用了什么技巧？我可以借鉴什么？\n';
+    advice += '4. 遇到棘手情况时，先深呼吸三次，问自己："我现在是在解决问题，还是在发泄情绪？"\n';
+    advice += '5. 推荐阅读：《非暴力沟通》《关键对话》《沟通的方法》\n\n';
+    advice += '软技能的提升没有捷径，但每一步都算数。' + userName + '，加油！';
+
+    comments.push({ title: '专属成长建议', content: advice });
+
+    return comments;
+}
+
+function showResults() {
+    const quizResult = calculateQuizScores();
+    const sceneResult = calculateSceneScores();
+    const part1Score = quizResult.totalPercent;
+    const part2Score = Math.round(((sceneResult.eq || 0) + (sceneResult.adapt || 0) + (sceneResult.stress || 0)) / 100 * 100);
+    const totalScore = Math.round(part1Score * 0.3 + part2Score * 0.7);
+
+    document.getElementById('totalScore').textContent = totalScore;
+    document.getElementById('part1Score').textContent = part1Score;
+    document.getElementById('part2Score').textContent = part2Score;
+
+    document.getElementById('scoreEQ').textContent = quizResult.dimPercent.eq;
+    document.getElementById('scoreStress').textContent = quizResult.dimPercent.stress;
+    document.getElementById('scoreAdapt').textContent = quizResult.dimPercent.adapt;
+    document.getElementById('scoreDetail').textContent = quizResult.dimPercent.detail;
+    document.getElementById('scorePatience').textContent = quizResult.dimPercent.patience;
+    document.getElementById('scoreResp').textContent = quizResult.dimPercent.resp;
+    document.getElementById('scoreEmpathy').textContent = quizResult.dimPercent.empathy;
+    document.getElementById('scoreService').textContent = quizResult.dimPercent.service;
+
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['情商', '应变', '抗压'],
+            datasets: [{
+                label: '你的得分',
+                data: [
+                    Math.round(((quizResult.dimPercent.eq + (sceneResult.eq || 0) / 30 * 100) / 2)),
+                    Math.round(((quizResult.dimPercent.adapt + (sceneResult.adapt || 0) / 30 * 100) / 2)),
+                    Math.round(((quizResult.dimPercent.stress + (sceneResult.stress || 0) / 40 * 100) / 2))
+                ],
+                backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                borderColor: 'rgba(249, 115, 22, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(249, 115, 22, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(249, 115, 22, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                r: {
+                    beginAtZero: true, max: 100, ticks: { stepSize: 20 },
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    angleLines: { color: 'rgba(0,0,0,0.1)' },
+                    pointLabels: { font: { size: 14, weight: 'bold' }, color: '#374151' }
+                }
+            },
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    const comments = generateComments(quizResult.dimPercent, sceneResult, totalScore);
+    const commentSection = document.getElementById('commentSection');
+    commentSection.innerHTML = comments.map(c => `
+        <div class="bg-gray-50 rounded-xl p-5 border border-gray-100">
+            <h4 class="font-bold text-primary-700 mb-2 flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                ${c.title}
+            </h4>
+            <p class="text-gray-700 text-sm leading-relaxed whitespace-pre-line">${c.content}</p>
+        </div>
+    `).join('');
+
+    showPage('resultPage');
+}
+</script>
+</body>
+</html>
