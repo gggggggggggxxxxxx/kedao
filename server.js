@@ -75,7 +75,7 @@ app.get('/health', (req, res) => res.json({ ok: true }));
 
 // 兜底：返回首页
 app.get('*', (req, res) => {
-  const index = path.join(__dirname, 'public', 'ke_dao_assessment.html');
+  const index = path.join(__dirname, 'public', 'index.html');
   if (fs.existsSync(index)) res.sendFile(index);
   else res.status(404).send('Not Found');
 });
