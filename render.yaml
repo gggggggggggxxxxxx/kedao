@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: kedao-assessment
+    name: kedao
     runtime: node
     plan: free
     region: singapore
